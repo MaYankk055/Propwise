@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+backend/model/
+backend/data/*.csv
+backend/data/*.json
+backend/data/news_cache.json
+.env

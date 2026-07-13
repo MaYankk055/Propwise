@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>PropWise India — Real Estate Intelligence</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --ink:#0a0a0a; --paper:#f5f2ee; --cream:#ede8e0; --warm:#d4c4a8;
+  --gold:#b8965a; --gold2:#d4a853; --charcoal:#1a1a1a; --mid:#2d2d2d;
+  --muted:#6b6b6b; --light:#9a9a9a; --border:#e0d8cc; --border2:#2a2a2a;
+  --green:#2d6a4f; --green2:#40916c; --red:#c1121f; --blue:#1d3557;
+  --card:#ffffff; --card-dark:#111111;
+  --fs-xs:.72rem; --fs-sm:.82rem; --fs-base:.92rem; --fs-lg:1.05rem; --fs-xl:1.3rem; --fs-2xl:1.7rem; --fs-3xl:2.4rem;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--ink);color:var(--paper);font-family:'Inter',sans-serif;font-weight:300;min-height:100vh;overflow-x:hidden;}
+::selection{background:var(--gold);color:var(--ink);}
+a{color:var(--gold2);text-decoration:none;}
+::-webkit-scrollbar{width:4px;} ::-webkit-scrollbar-track{background:var(--ink);} ::-webkit-scrollbar-thumb{background:var(--mid);border-radius:2px;}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(10,10,10,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border2);padding:0 32px;display:flex;align-items:center;height:58px;}
+.logo{display:flex;align-items:center;gap:10px;margin-right:32px;padding-right:24px;border-right:1px solid var(--border2);}
+.logo-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;}
+.logo-text{font-family:'Playfair Display',serif;font-size:1rem;letter-spacing:.5px;color:var(--paper);}
+.logo-sub{font-size:.6rem;color:var(--light);letter-spacing:2px;text-transform:uppercase;margin-top:1px;}
+.nav-items{display:flex;gap:0;flex:1;overflow-x:auto;}
+.nav-item{padding:0 16px;height:58px;display:flex;align-items:center;font-size:var(--fs-xs);color:var(--light);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;}
+.nav-item:hover,.nav-item.active{color:var(--paper);border-bottom-color:var(--gold);}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:12px;}
+.nav-badge{background:var(--mid);border:1px solid var(--border2);padding:4px 12px;border-radius:2px;font-size:.65rem;letter-spacing:1px;color:var(--light);text-transform:uppercase;}
+.nav-badge strong{color:var(--gold2);}
+.live-dot{width:6px;height:6px;background:var(--green2);border-radius:50%;display:inline-block;margin-left:6px;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* ── TABS ── */
+.tab{display:none;padding-top:58px;min-height:100vh;}
+.tab.active{display:block;}
+
+/* ── HERO HEADER ── */
+.page-header{padding:56px 48px 40px;border-bottom:1px solid var(--border2);position:relative;overflow:hidden;}
+.page-header::before{content:'';position:absolute;top:0;right:0;width:40%;height:100%;background:linear-gradient(135deg,transparent,rgba(184,150,90,.04));pointer-events:none;}
+.header-tag{font-size:.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.page-header h1{font-family:'Playfair Display',serif;font-size:var(--fs-3xl);font-weight:400;line-height:1.15;color:var(--paper);margin-bottom:12px;}
+.page-header h1 em{font-style:italic;color:var(--gold2);}
+.page-header p{color:var(--light);font-size:var(--fs-sm);max-width:560px;line-height:1.7;}
+
+/* ── STATS STRIP ── */
+.stats-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:24px;padding:32px 48px;border-bottom:1px solid var(--border2);background:linear-gradient(180deg,rgba(0,0,0,.2),transparent);}
+.stat-item{padding:28px 24px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:12px;position:relative;transition:all 0.4s cubic-bezier(0.165,0.84,0.44,1);box-shadow:0 4px 16px rgba(0,0,0,.2);backdrop-filter:blur(10px);}
+.stat-item:hover{transform:translateY(-6px);box-shadow:0 16px 32px rgba(0,0,0,.6);border-color:rgba(184,150,90,.5);background:rgba(255,255,255,.05);}
+.stat-val{font-family:'Playfair Display',serif;font-size:var(--fs-2xl);color:var(--paper);margin-bottom:8px;letter-spacing:-.5px;text-shadow:0 2px 10px rgba(255,255,255,0.1);}
+.stat-val span{font-size:var(--fs-sm);color:var(--gold2);font-family:'Inter',sans-serif;font-weight:500;}
+.stat-label{font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600;}
+.stat-change{font-size:var(--fs-xs);color:var(--green2);margin-top:10px;display:inline-block;padding:4px 8px;background:rgba(45,106,79,.15);border-radius:4px;border:1px solid rgba(45,106,79,.3);}
+
+/* ── CONTENT ── */
+.content{padding:36px 48px;}
+.section-title{font-size:.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border2);}
+
+/* ── GRID ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+@media(max-width:900px){.g2,.g3,.g4{grid-template-columns:1fr;}.stats-strip{grid-template-columns:repeat(2,1fr);}}
+.gap{margin-bottom:24px;}
+
+/* ── CARD ── */
+.card{background:linear-gradient(145deg,var(--mid),#202020);border:1px solid rgba(255,255,255,.05);border-radius:12px;padding:32px;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:all 0.3s ease;position:relative;z-index:1;}
+.card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold2),transparent);opacity:0;transition:opacity 0.4s;border-radius:12px 12px 0 0;}
+.card:hover{transform:translateY(-3px);box-shadow:0 20px 48px rgba(0,0,0,.5);border-color:rgba(255,255,255,.1);}
+.card:hover::after{opacity:1;}
+.card-sm{background:linear-gradient(145deg,var(--mid),#202020);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:24px;box-shadow:0 4px 16px rgba(0,0,0,.2);}
+.card-title{font-size:.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:24px;font-weight:600;}
+
+/* ── FORM ── */
+.form2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:680px){.form2{grid-template-columns:1fr;}}
+.field{display:flex;flex-direction:column;gap:5px;}
+.field label{font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--light);}
+.field input,.field select{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);color:var(--paper);padding:12px 16px;border-radius:6px;font-size:var(--fs-sm);outline:none;font-family:'Inter',sans-serif;transition:all .3s ease;-webkit-appearance:none;appearance:none;box-shadow:inset 0 2px 4px rgba(0,0,0,.1);}
+.field input:focus,.field select:focus{border-color:var(--gold);background:rgba(255,255,255,.06);box-shadow:0 0 0 3px rgba(184,150,90,.15), inset 0 2px 4px rgba(0,0,0,.1);}
+.field select option{background:var(--mid);}
+.range-wrap{position:relative;padding:4px 0;}
+input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:4px;background:rgba(255,255,255,.1);border-radius:2px;outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));cursor:pointer;border:2px solid var(--mid);box-shadow:0 2px 6px rgba(0,0,0,.4);transition:transform 0.2s;}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
+.btn-gold{width:100%;padding:14px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--ink);border:none;border-radius:6px;font-size:var(--fs-sm);font-weight:700;cursor:pointer;letter-spacing:2px;text-transform:uppercase;margin-top:14px;transition:all .3s ease;font-family:'Inter',sans-serif;box-shadow:0 6px 16px rgba(184,150,90,.25);}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(184,150,90,.4);filter:brightness(1.1);}
+.btn-outline{padding:10px 24px;background:transparent;border:1px solid var(--gold);color:var(--gold);border-radius:6px;font-size:var(--fs-xs);letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .3s ease;font-family:'Inter',sans-serif;}
+.btn-outline:hover{background:var(--gold);color:var(--ink);box-shadow:0 4px 12px rgba(184,150,90,.3);transform:translateY(-1px);}
+
+/* ── RESULT BOX ── */
+#result-box{display:none;margin-top:20px;border:1px solid rgba(184,150,90,.4);border-radius:12px;overflow:hidden;box-shadow:0 12px 32px rgba(0,0,0,.4);background:rgba(255,255,255,.02);backdrop-filter:blur(10px);}
+.result-header{background:linear-gradient(135deg,rgba(184,150,90,.15),rgba(212,168,83,.05));padding:26px 28px;border-bottom:1px solid rgba(184,150,90,.2);}
+.result-price{font-family:'Playfair Display',serif;font-size:var(--fs-3xl);color:var(--gold2);letter-spacing:-.5px;text-shadow:0 2px 12px rgba(212,168,83,.2);}
+.result-range{font-size:var(--fs-xs);color:var(--light);margin-top:4px;letter-spacing:.5px;}
+.result-body{padding:20px 28px;}
+.result-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.05);}
+.res-metric{background:rgba(255,255,255,.03);padding:18px 16px;text-align:center;transition:background 0.3s;}
+.res-metric:hover{background:rgba(255,255,255,.06);}
+.res-metric .v{font-family:'Playfair Display',serif;font-size:var(--fs-lg);color:var(--gold2);}
+.res-metric .l{font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:3px;}
+.inv-score{width:56px;height:56px;border-radius:50%;border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--gold2);}
+.suggest-wrap{padding:16px 24px;border-top:1px solid var(--border2);}
+.suggest-label{font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.suggest-item{font-size:var(--fs-xs);color:var(--light);padding:7px 10px;border-left:2px solid var(--gold);background:rgba(184,150,90,.05);border-radius:0 2px 2px 0;margin-bottom:6px;line-height:1.5;}
+
+/* ── TABLE ── */
+.data-table{width:100%;border-collapse:collapse;font-size:var(--fs-sm);}
+.data-table th{padding:14px 18px;text-align:left;color:var(--gold2);font-weight:600;border-bottom:2px solid var(--border2);font-size:.65rem;letter-spacing:1px;text-transform:uppercase;background:rgba(0,0,0,.2);}
+.data-table td{padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.03);color:var(--light);transition:background .2s;}
+.data-table tr:hover td{background:rgba(184,150,90,.08);color:var(--paper);}
+.city-name-cell{color:var(--paper)!important;font-weight:500;}
+.tier-pill{display:inline-block;padding:2px 8px;border-radius:1px;font-size:.58rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;}
+.t1{background:rgba(184,150,90,.15);color:var(--gold2);border:1px solid rgba(184,150,90,.3);}
+.t2{background:rgba(100,120,140,.1);color:#7ea8c4;border:1px solid rgba(100,120,140,.25);}
+
+/* ── CHART ── */
+.chart-box{position:relative;height:220px;}
+.chart-box canvas{max-height:220px;}
+
+/* ── HEATMAP ── */
+.heatmap-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(115px,1fr));gap:6px;}
+.hm-cell{border-radius:3px;padding:12px 10px;text-align:center;cursor:pointer;transition:transform .12s,box-shadow .12s;}
+.hm-cell:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.hm-city{font-size:var(--fs-xs);font-weight:600;color:#fff;margin-bottom:3px;}
+.hm-psf{font-size:.65rem;color:rgba(255,255,255,.85);}
+.hm-gr{font-size:.6rem;color:rgba(255,255,255,.7);margin-top:2px;}
+
+/* ── CHIPS ── */
+.chip-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;}
+.chip{padding:8px 16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:20px;font-size:var(--fs-xs);cursor:pointer;color:var(--light);transition:all .3s cubic-bezier(.25,.8,.25,1);letter-spacing:.5px;}
+.chip:hover{border-color:var(--gold);color:var(--gold);background:rgba(184,150,90,.05);transform:translateY(-2px);box-shadow:0 4px 12px rgba(184,150,90,.15);}
+.chip.sel{background:linear-gradient(135deg,rgba(184,150,90,.2),rgba(212,168,83,.1));border-color:var(--gold);color:var(--gold2);box-shadow:0 4px 16px rgba(184,150,90,.25);}
+
+/* ── NEWS ── */
+.news-feed{display:flex;flex-direction:column;gap:12px;background:transparent;}
+.news-card{background:linear-gradient(145deg,rgba(255,255,255,.02),rgba(0,0,0,.2));border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:24px 28px;transition:all 0.3s ease;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.15);}
+.news-card:hover{transform:translateY(-3px);box-shadow:0 12px 24px rgba(0,0,0,.3);border-color:rgba(184,150,90,.3);background:linear-gradient(145deg,rgba(255,255,255,.04),rgba(0,0,0,.1));}
+.news-tag{font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;font-weight:600;}
+.news-headline{font-family:'Playfair Display',serif;font-size:var(--fs-base);color:var(--paper);line-height:1.45;margin-bottom:7px;}
+.news-desc{font-size:var(--fs-xs);color:var(--muted);line-height:1.6;}
+.news-meta{display:flex;gap:16px;margin-top:8px;font-size:.62rem;letter-spacing:.5px;color:var(--light);}
+
+/* ── ROI ── */
+.roi-result-box{margin-top:0;}
+.roi-hero{background:linear-gradient(135deg,rgba(45,106,79,.12),rgba(64,145,108,.06));border:1px solid rgba(45,106,79,.3);border-radius:4px;padding:24px;text-align:center;margin-bottom:16px;}
+.roi-val{font-family:'Playfair Display',serif;font-size:var(--fs-3xl);color:#40916c;text-shadow: 0 0 20px rgba(64,145,108,0.3);}
+.roi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,0.1);}
+.roi-m{background:var(--charcoal);padding:18px 14px;text-align:center;}
+.roi-m .v{font-family:'Playfair Display',serif;font-size:var(--fs-xl);color:var(--gold2);font-weight:600;}
+.roi-m .v.g{color:#52a87f;}
+.roi-m .v.r{color:#ff8080;}
+.roi-m .l{font-size:.65rem;letter-spacing:1px;text-transform:uppercase;color:var(--light);margin-top:6px;font-weight:500;}
+
+/* ── PLOT TABS ── */
+.plot-tabs{display:flex;gap:0;border-bottom:1px solid var(--border2);margin-bottom:20px;}
+.plot-tab{padding:10px 20px;font-size:var(--fs-xs);letter-spacing:1px;text-transform:uppercase;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s;}
+.plot-tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+.plot-img{width:100%;border-radius:3px;display:none;}
+.plot-img.active{display:block;}
+
+/* ── INTERVIEW CARDS ── */
+.qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border2);}
+.qa-item{background:var(--charcoal);padding:20px;}
+.qa-q{font-size:var(--fs-xs);font-weight:600;color:var(--gold);letter-spacing:.5px;margin-bottom:8px;}
+.qa-a{font-size:var(--fs-xs);color:var(--muted);line-height:1.65;}
+
+/* ── SPINNER ── */
+.spinner{width:14px;height:14px;border:2px solid rgba(184,150,90,.3);border-top-color:var(--gold);border-radius:50%;animation:spin .6s linear infinite;display:none;margin:0 auto;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── TREND KEYS ── */
+.trend-event{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border2);}
+.trend-event:last-child{border-bottom:none;}
+.trend-tag{flex-shrink:0;padding:2px 8px;font-size:.58rem;letter-spacing:1px;text-transform:uppercase;font-weight:600;border-radius:2px;}
+.t-red{background:rgba(193,18,31,.2);color:#e07070;}
+.t-amber{background:rgba(212,168,83,.15);color:var(--gold2);}
+.t-green{background:rgba(45,106,79,.2);color:var(--green2);}
+.t-blue{background:rgba(29,53,87,.3);color:#7ea8c4;}
+
+/* ── GROWTH BAR ── */
+.g-bar-wrap{display:flex;align-items:center;gap:10px;}
+.g-bar{flex:1;background:var(--border2);border-radius:1px;height:3px;}
+.g-bar-fill{height:100%;border-radius:1px;background:var(--gold);}
+
+/* ── MARKET SNAPSHOT ── */
+.snapshot-item{padding:14px 18px;border-left:2px solid var(--gold);background:rgba(184,150,90,.04);margin-bottom:10px;border-radius:0 3px 3px 0;}
+.snapshot-item h4{font-size:var(--fs-xs);font-weight:600;color:var(--paper);margin-bottom:4px;letter-spacing:.3px;}
+.snapshot-item p{font-size:var(--fs-xs);color:var(--muted);line-height:1.55;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="logo">
+    <div class="logo-icon">⬡</div>
+    <div><div class="logo-text">PropWise</div><div class="logo-sub">India</div></div>
+  </a>
+  <div class="nav-items">
+    <div class="nav-item active" onclick="showTab('dashboard',this)">Dashboard</div>
+    <div class="nav-item" onclick="showTab('predict',this)">Predict</div>
+    <div class="nav-item" onclick="showTab('compare',this)">Compare</div>
+    <div class="nav-item" onclick="showTab('heatmap',this)">Heatmap</div>
+    <div class="nav-item" onclick="showTab('trends',this)">Trends</div>
+    <div class="nav-item" onclick="showTab('roi',this)">ROI</div>
+    <div class="nav-item" onclick="showTab('news',this)">News<span class="live-dot"></span></div>
+  </div>
+</nav>
+
+<!-- ══════════════ DASHBOARD ══════════════ -->
+<div class="tab active" id="tab-dashboard">
+  <div class="page-header">
+    <div class="header-tag">India Real Estate Intelligence</div>
+    <h1>Market Overview<br><em></em></h1>
+    <p>AI-powered price intelligence across {{ meta.n_cities }} Indian cities · {{ "{:,}".format(meta.n_records) }} verified property records · Live Q1 market rates</p>
+  </div>
+  <div class="stats-strip">
+    <div class="stat-item"><div class="stat-val">{{ meta.n_cities }}<span> cities</span></div><div class="stat-label">Coverage</div><div class="stat-change">↑ Tier 1 + Tier 2 + Tier 3</div></div>
+    <div class="stat-item"><div class="stat-val">{{ "{:,}".format(meta.n_records) }}<span> records</span></div><div class="stat-label">Training Data</div><div class="stat-change">↑ Market Rates</div></div>
+    <div class="stat-item"><div class="stat-val">{{ "%.1f"|format(meta.metrics.R2*100) }}<span>%</span></div><div class="stat-label">Model Accuracy R²</div><div class="stat-change">{{ meta.best_model }}</div></div>
+    <div class="stat-item"><div class="stat-val">₹1.1L<span>/sqft</span></div><div class="stat-label">Mumbai Worli Peak</div><div class="stat-change">↑ All-time high</div></div>
+    <div class="stat-item"><div class="stat-val">15.8<span>%</span></div><div class="stat-label">Top City Growth YoY</div><div class="stat-change">↑ Bengaluru leads</div></div>
+  </div>
+  <div class="content">
+    <div class="section-title">City Market Performance</div>
+    <div class="g2 gap">
+      <div class="card">
+        <div class="card-title">Average Price / SqFt — Top 12 Cities</div>
+        <div class="chart-box"><canvas id="cityBarChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">YoY Price Growth (%) — Q1</div>
+        <div class="chart-box"><canvas id="growthChart"></canvas></div>
+      </div>
+    </div>
+    <div class="card gap" style="overflow-x:auto">
+      <div class="card-title">All Cities — Market Data Table</div>
+      <table class="data-table">
+        <thead><tr><th>City</th><th>State</th><th>Tier</th><th>Min ₹/sqft</th><th>Avg ₹/sqft</th><th>Max ₹/sqft</th><th>YoY Growth</th></tr></thead>
+        <tbody id="cityTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PREDICT ══════════════ -->
+<div class="tab" id="tab-predict">
+  <div class="page-header">
+    <div class="header-tag">AI Valuation Engine</div>
+    <h1>Price<br><em>Prediction</em></h1>
+    <p>Enter property details for an instant market value estimate powered by Gradient Boosting ML trained on {{ meta.n_cities }} Indian cities</p>
+  </div>
+  <div class="content">
+    <div class="g2">
+      <div>
+        <div class="card gap">
+          <div class="card-title">Property Details</div>
+          <div class="form2">
+            <div class="field"><label>City</label>
+              <select id="p-city" onchange="loadLocalities()">{% for c in cities %}<option value="{{ c }}">{{ c }}</option>{% endfor %}</select>
+            </div>
+            <div class="field"><label>Locality</label>
+              <select id="p-locality"><option>Loading...</option></select>
+            </div>
+            <div class="field"><label>Property Type</label>
+              <select id="p-type">{% for t in property_types %}<option>{{ t }}</option>{% endfor %}</select>
+            </div>
+            <div class="field"><label>Furnishing</label>
+              <select id="p-furnish">{% for f in furnishing_opts %}<option>{{ f }}</option>{% endfor %}</select>
+            </div>
+            <div class="field"><label>Area (sq ft)</label>
+              <input type="number" id="p-area" value="1200" min="200" max="10000"/>
+            </div>
+            <div class="field"><label>Floor</label>
+              <select id="p-floor">{% for f in floor_opts %}<option>{{ f }}</option>{% endfor %}</select>
+            </div>
+            <div class="field"><label>Bedrooms (BHK)</label>
+              <select id="p-beds"><option value="1">1 BHK</option><option value="2">2 BHK</option><option value="3" selected>3 BHK</option><option value="4">4 BHK</option><option value="5">5 BHK</option></select>
+            </div>
+            <div class="field"><label>Bathrooms</label>
+              <select id="p-baths"><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option><option value="4">4</option></select>
+            </div>
+            <div class="field"><label>Age (years)</label>
+              <input type="number" id="p-age" value="3" min="0" max="60"/>
+            </div>
+            <div class="field"><label>Parking</label>
+              <select id="p-garage"><option value="0">None</option><option value="1" selected>1 Car</option><option value="2">2 Cars</option></select>
+            </div>
+          </div>
+
+          <button class="btn-gold" onclick="predictPrice()">
+            <span id="predict-text">Estimate Market Value</span>
+            <div class="spinner" id="predict-spinner"></div>
+          </button>
+        </div>
+
+        <div id="result-box">
+          <div class="result-header">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start">
+              <div>
+                <div style="font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Estimated Market Value</div>
+                <div class="result-price" id="r-price">—</div>
+                <div class="result-range" id="r-range"></div>
+              </div>
+              <div style="text-align:center">
+                <div class="inv-score" id="inv-ring">—</div>
+                <div style="font-size:.58rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-top:5px">Invest Score</div>
+              </div>
+            </div>
+          </div>
+          <div class="result-metrics">
+            <div class="res-metric"><div class="v" id="r-psf">—</div><div class="l">₹ / sq ft</div></div>
+            <div class="res-metric"><div class="v" id="r-growth">—</div><div class="l">City YoY Growth</div></div>
+            <div class="res-metric"><div class="v" id="r-cityavg">—</div><div class="l">City Avg ₹/sqft</div></div>
+          </div>
+          <div class="suggest-wrap">
+            <div class="suggest-label">AI Advisory</div>
+            <div id="suggest-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card gap">
+          <div class="card-title">Select Amenities</div>
+          <div id="amenities-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px">
+            {% for a in amenities_list %}
+            <label class="amenity-item" style="display:flex;align-items:center;font-size:.7rem;color:var(--light);padding:8px 10px;border:1px solid var(--border2);border-radius:4px;cursor:pointer;transition:all 0.2s">
+              <input type="checkbox" class="am-checkbox" style="margin-right:10px;accent-color:var(--gold);transform:scale(1.1);cursor:pointer" onchange="this.parentElement.style.borderColor=this.checked?'var(--gold)':'var(--border2)';this.parentElement.style.color=this.checked?'var(--paper)':'var(--light)';this.parentElement.style.background=this.checked?'rgba(184,150,90,.05)':'transparent'" />
+              {{ a }}
+            </label>
+            {% endfor %}
+          </div>
+          <div style="background:var(--charcoal);border:1px solid var(--border2);padding:16px;border-radius:2px">
+            <div style="font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px">Pricing Multipliers</div>
+            <div style="display:flex;flex-direction:column;gap:7px;font-size:var(--fs-xs);color:var(--muted)">
+              <div style="display:flex;justify-content:space-between"><span>Each amenity adds</span><span style="color:var(--light)">~1.8% premium</span></div>
+              <div style="display:flex;justify-content:space-between"><span>New build (≤3 yrs)</span><span style="color:var(--light)">+8% over older</span></div>
+              <div style="display:flex;justify-content:space-between"><span>Fully Furnished</span><span style="color:var(--light)">+28% vs Bare</span></div>
+              <div style="display:flex;justify-content:space-between"><span>Top Floor</span><span style="color:var(--light)">+10% vs Ground</span></div>
+              <div style="display:flex;justify-content:space-between"><span>Penthouse</span><span style="color:var(--light)">+122% vs Apt</span></div>
+              <div style="display:flex;justify-content:space-between"><span>Prime locality</span><span style="color:var(--light)">up to 3.4× base</span></div>
+              <div style="display:flex;justify-content:space-between"><span>Mumbai Worli</span><span style="color:var(--gold2)">₹1.1L / sqft</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ COMPARE ══════════════ -->
+<style>
+.cmp-search-wrap { position: relative; }
+.cmp-search-wrap input {
+  padding: 12px 14px; width: 100%; border: 1px solid var(--border2); border-radius: 4px;
+  background: var(--charcoal); color: var(--paper); font-size: var(--fs-sm); font-family: 'Inter', sans-serif;
+  transition: border-color .2s;
+}
+.cmp-search-wrap input:focus { border-color: var(--gold); outline: none; }
+.cmp-search-wrap input::placeholder { color: var(--muted); }
+.cmp-dropdown {
+  position: absolute; top: 100%; left: 0; right: 0; z-index: 50;
+  background: var(--charcoal); border: 1px solid var(--border2); border-top: none;
+  border-radius: 0 0 4px 4px; max-height: 200px; overflow-y: auto; display: none;
+}
+.cmp-dropdown.open { display: block; }
+.cmp-dropdown-item {
+  padding: 10px 14px; font-size: var(--fs-xs); color: var(--light); cursor: pointer;
+  transition: background .15s, color .15s; border-bottom: 1px solid rgba(255,255,255,.04);
+}
+.cmp-dropdown-item:hover { background: rgba(184,150,90,.12); color: var(--paper); }
+.cmp-dropdown-item.disabled { opacity: .35; pointer-events: none; }
+.cmp-selected-card {
+  background: var(--charcoal); border: 1px solid var(--border2); border-radius: 6px;
+  padding: 18px; display: none; position: relative; transition: all .25s;
+}
+.cmp-selected-card.active { display: block; }
+.cmp-selected-card .city-name {
+  font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--paper); margin-bottom: 8px;
+}
+.cmp-selected-card .city-meta { display: flex; gap: 16px; flex-wrap: wrap; }
+.cmp-selected-card .city-meta span { font-size: var(--fs-xs); color: var(--muted); }
+.cmp-selected-card .city-meta strong { color: var(--light); }
+.cmp-remove-btn {
+  position: absolute; top: 12px; right: 12px; background: none; border: 1px solid var(--border2);
+  color: var(--muted); width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
+  font-size: 14px; display: flex; align-items: center; justify-content: center; transition: all .2s;
+}
+.cmp-remove-btn:hover { border-color: var(--red); color: var(--red); background: rgba(193,18,31,.1); }
+.cmp-empty-msg {
+  text-align: center; padding: 28px 14px; color: var(--muted); font-size: var(--fs-xs);
+  border: 1px dashed var(--border2); border-radius: 6px;
+}
+.cmp-partition { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 768px) { .cmp-partition { grid-template-columns: 1fr; } }
+</style>
+
+<div class="tab" id="tab-compare">
+  <div class="page-header">
+    <div class="header-tag">Market Analysis</div>
+    <h1>City<br><em>Comparison</em></h1>
+    <p>Search and select cities to compare across price per sqft, growth rate, and affordability tier</p>
+  </div>
+  <div class="content">
+
+    <!-- TWO PARTITION SEARCH SECTIONS -->
+    <div class="cmp-partition" id="cmp-partitions">
+
+      <!-- PARTITION 1 -->
+      <div class="card gap">
+        <div class="card-title" style="display:flex;align-items:center;gap:8px">
+          <span style="background:var(--gold);color:var(--ink);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:600">1</span>
+          City One
+        </div>
+        <div class="cmp-search-wrap">
+          <input type="text" id="cmp-search-1" placeholder="Type to search city..." oninput="cmpFilter(1)" onfocus="cmpFilter(1)">
+          <div class="cmp-dropdown" id="cmp-dropdown-1"></div>
+        </div>
+        <div class="cmp-selected-card" id="cmp-card-1"></div>
+        <div class="cmp-empty-msg" id="cmp-empty-1">Search and select a city above</div>
+      </div>
+
+      <!-- PARTITION 2 -->
+      <div class="card gap">
+        <div class="card-title" style="display:flex;align-items:center;gap:8px">
+          <span style="background:var(--gold);color:var(--ink);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:600">2</span>
+          City Two
+        </div>
+        <div class="cmp-search-wrap">
+          <input type="text" id="cmp-search-2" placeholder="Type to search city..." oninput="cmpFilter(2)" onfocus="cmpFilter(2)">
+          <div class="cmp-dropdown" id="cmp-dropdown-2"></div>
+        </div>
+        <div class="cmp-selected-card" id="cmp-card-2"></div>
+        <div class="cmp-empty-msg" id="cmp-empty-2">Search and select a city above</div>
+      </div>
+
+    </div>
+
+    <!-- ADD MORE CITIES BUTTON -->
+    <div style="text-align:center;margin:16px 0">
+      <button class="btn-outline" id="add-partition-btn" onclick="addPartition()" style="font-size:.7rem;padding:8px 20px">+ Add Another City (Max 5)</button>
+    </div>
+
+    <!-- COMPARE BUTTON -->
+    <div style="text-align:center;margin:8px 0 24px">
+      <button class="btn-gold" onclick="runCompare()" style="padding:14px 48px">Run Comparison</button>
+    </div>
+
+    <div id="compare-results" style="display:none">
+      <div class="g2 gap">
+        <div class="card">
+          <div class="card-title">Price Range Per SqFt</div>
+          <div class="chart-box"><canvas id="cmpPsfChart"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-title">YoY Price Growth (%)</div>
+          <div class="chart-box"><canvas id="cmpGrowthChart"></canvas></div>
+        </div>
+      </div>
+      <div class="card gap" style="overflow-x:auto">
+        <div class="card-title">Detailed Comparison</div>
+        <table class="data-table">
+          <thead><tr><th>City</th><th>State</th><th>Tier</th><th>Min ₹/sqft</th><th>Avg ₹/sqft</th><th>Max ₹/sqft</th><th>YoY Growth</th><th>Verdict</th></tr></thead>
+          <tbody id="cmpTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ HEATMAP ══════════════ -->
+<div class="tab" id="tab-heatmap">
+  <div class="page-header">
+    <div class="header-tag">Spatial Intelligence</div>
+    <h1>Price<br><em>Heatmap</em></h1>
+    <p>Visual intensity map of property values across {{ meta.n_cities }} Indian cities — click any city to predict</p>
+  </div>
+  <div class="content">
+    <div class="card gap">
+      <div class="card-title" style="margin-bottom:16px">
+        <span>Filter &amp; Sort</span>
+        <span style="margin-left:auto;display:flex;gap:8px">
+          <button class="btn-outline" onclick="sortHM('avg_psf')" style="font-size:.6rem;padding:4px 10px">By Price</button>
+          <button class="btn-outline" onclick="sortHM('growth_yoy')" style="font-size:.6rem;padding:4px 10px">By Growth</button>
+          <button class="btn-outline" onclick="filterHM(1)" style="font-size:.6rem;padding:4px 10px">Tier 1</button>
+          <button class="btn-outline" onclick="filterHM(2)" style="font-size:.6rem;padding:4px 10px">Tier 2</button>
+          <button class="btn-outline" onclick="filterHM(0)" style="font-size:.6rem;padding:4px 10px">All</button>
+        </span>
+      </div>
+      <div class="heatmap-grid" id="heatmapGrid"></div>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:16px">
+        <span style="font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)">Affordable</span>
+        <div style="flex:1;height:5px;border-radius:2px;background:linear-gradient(90deg,#0f3057,#1d4d8c,#5a3a8c,#8c2a3a,#6b0f1a)"></div>
+        <span style="font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)">Premium</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ TRENDS ══════════════ -->
+<div class="tab" id="tab-trends">
+  <div class="page-header">
+    <div class="header-tag">Historical Analysis</div>
+    <h1>Price<br><em>Trends</em></h1>
+    <p>Quarterly price movement across 6 metro cities from Q1 2020 to Q1 — includes COVID dip and recovery cycle</p>
+  </div>
+  <div class="content">
+    <div class="card gap">
+      <div class="card-title">Price Index ₹/sqft — 6 Metro Cities (2020–Present)</div>
+      <div style="height:300px"><canvas id="trendChart"></canvas></div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-title">Market Timeline</div>
+        <div id="trend-events"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Growth Leaders</div>
+        <div id="growthLeaders" style="display:flex;flex-direction:column;gap:10px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ ROI ══════════════ -->
+<div class="tab" id="tab-roi">
+  <div class="page-header">
+    <div class="header-tag">Investment Calculator</div>
+    <h1>ROI<br><em>Analysis</em></h1>
+    <p>Calculate capital gains, rental yield, EMI costs and net returns using city-specific growth rates</p>
+  </div>
+  <div class="content">
+    <div class="g2 gap">
+      <div class="card">
+        <div class="card-title">Investment Parameters</div>
+        <div class="form2">
+          <div class="field"><label>City</label><select id="roi-city">{% for c in cities %}<option>{{ c }}</option>{% endfor %}</select></div>
+          <div class="field"><label>Purchase Price (₹)</label><input type="number" id="roi-price" value="7500000"/></div>
+          <div class="field"><label>Monthly Rent (₹)</label><input type="number" id="roi-rent" value="35000"/></div>
+          <div class="field"><label>Holding Period (yrs)</label><input type="number" id="roi-years" value="5" min="1" max="30"/></div>
+          <div class="field"><label>Loan %</label><input type="number" id="roi-loan" value="80" min="0" max="100"/></div>
+          <div class="field"><label>Interest Rate (%)</label><input type="number" id="roi-rate" value="7.5" step="0.1"/></div>
+        </div>
+        <button class="btn-gold" onclick="calcROI()">Calculate Returns</button>
+      </div>
+      <div class="card" id="roi-result-card">
+        <div class="card-title">Return Analysis</div>
+        <div id="roi-result" style="color:var(--muted);font-size:var(--fs-sm);padding:24px 0;text-align:center;letter-spacing:.5px">
+          Enter parameters and calculate
+        </div>
+      </div>
+    </div>
+    <div class="card" id="roi-chart-card" style="display:none">
+      <div class="card-title">Property Value Projection</div>
+      <div style="height:250px"><canvas id="roiChart"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ NEWS ══════════════ -->
+<div class="tab" id="tab-news">
+  <div class="page-header">
+    <div class="header-tag">Market Intelligence</div>
+    <h1>News &amp;<br><em>Insights</em></h1>
+    <p>Latest verified real estate headlines and market data from Q1–Q2 — sourced from JLL, Colliers, Anarock and Reuters</p>
+  </div>
+  <div class="content">
+    <div class="g2">
+      <div>
+        <div class="section-title">Latest Headlines</div>
+        <div class="news-feed" id="newsFeed">
+          <div style="padding:24px;color:var(--muted);font-size:var(--fs-sm)">Loading...</div>
+        </div>
+      </div>
+      <div>
+        <div class="section-title">Market Snapshot</div>
+        <div class="snapshot-item"><h4>📈 Q1 Sales Volume</h4><p>70,631 units sold across top 7 cities — 8% YoY rise, rebounding from 12% decline in Q1 2025. MMR leads with 31% market share. (JLL)</p></div>
+        <div class="snapshot-item"><h4>💎 Premium Surge</h4><p>Properties ₹1.5–3 Cr segment grew 67% YoY. Sub-₹1 Cr segment contracted 24% as buyers move upmarket. (Anarock Research)</p></div>
+        <div class="snapshot-item"><h4>🏦 Home Loan Rates</h4><p>Best rates now approach 7.1% — lowest since 2022. RBI cut repo rate to 5.75%. Housing loan stock reaches ₹33.1 trillion. (RBI, Feb)</p></div>
+        <div class="snapshot-item"><h4>🏙️ Bengaluru Office Market</h4><p>20–22 mn sqft new office supply led by GCCs driving 40% demand. Grade A rents rising 7.5–9% annually. (Colliers India)</p></div>
+        <div class="snapshot-item"><h4>📊 REIT Market</h4><p>₹1.66 lakh crore REIT market. SEBI reclassified as equity Jan. ₹7.2–7.8 bn institutional capital expected FY. (SEBI/Colliers)</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.best-model-card { border-color: rgba(184,150,90,.4) !important; }
+.metric-best { color: var(--gold2) !important; }
+.metric-normal { color: var(--light) !important; }
+</style>
+<!-- ══════════════ MODEL ══════════════ -->
+
+<!-- ══════════════ SCRIPTS ══════════════ -->
+<script id="cities-data" type="application/json">
+  {{ cities | tojson | safe }}
+</script>
+<script>
+const CHART_OPT={responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{labels:{color:'#6b6b6b',font:{size:10,family:'Inter'},boxWidth:10}}},
+  scales:{x:{ticks:{color:'#4a4a4a',font:{size:9}},grid:{color:'#1e1e1e'}},
+          y:{ticks:{color:'#4a4a4a',font:{size:9}},grid:{color:'#1e1e1e'}}}};
+const GOLD=['#b8965a','#c9a46a','#d4b27a','#c09060','#a07840','#e0c090','#987030'];
+
+let cityData=[],hmData=[],roiC=null,cmpPsf=null,cmpG=null,trendC=null;
+
+function showTab(id,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+  if(id==='dashboard'&&!cityData.length) loadDashboard();
+  if(id==='trends') loadTrends();
+  if(id==='news') loadNews();
+  if(id==='heatmap') loadHeatmap();
+  if(id==='compare') loadChips();
+  if(id==='predict') loadLocalities();
+}
+
+// DASHBOARD
+async function loadDashboard(){
+  const r=await fetch('/api/city-stats'); cityData=await r.json();
+  const top=cityData.slice(0,12);
+  new Chart(document.getElementById('cityBarChart').getContext('2d'),{
+    type:'bar',
+    data:{labels:top.map(c=>c.city),datasets:[{label:'Avg ₹/sqft',data:top.map(c=>c.avg_psf),
+      backgroundColor:top.map((_,i)=>`hsla(${36+i*4},55%,${52+i*1.5}%,.85)`),borderRadius:2,borderSkipped:false}]},
+    options:{...CHART_OPT,plugins:{...CHART_OPT.plugins,legend:{display:false}},
+      scales:{...CHART_OPT.scales,y:{...CHART_OPT.scales.y,ticks:{...CHART_OPT.scales.y.ticks,callback:v=>'₹'+v.toLocaleString('en-IN')}}}}
+  });
+  const sg=[...cityData].sort((a,b)=>b.growth_yoy-a.growth_yoy).slice(0,12);
+  new Chart(document.getElementById('growthChart').getContext('2d'),{
+    type:'bar',
+    data:{labels:sg.map(c=>c.city),datasets:[{label:'YoY %',data:sg.map(c=>c.growth_yoy),
+      backgroundColor:sg.map(c=>c.growth_yoy>=12?'rgba(45,106,79,.85)':c.growth_yoy>=9?'rgba(184,150,90,.8)':'rgba(70,70,80,.7)'),
+      borderRadius:2,borderSkipped:false}]},
+    options:{...CHART_OPT,plugins:{...CHART_OPT.plugins,legend:{display:false}},
+      scales:{...CHART_OPT.scales,y:{...CHART_OPT.scales.y,ticks:{...CHART_OPT.scales.y.ticks,callback:v=>v+'%'}}}}
+  });
+  document.getElementById('cityTableBody').innerHTML=cityData.map(c=>`
+    <tr><td class="city-name-cell">${c.city}</td><td>${c.state}</td>
+    <td><span class="tier-pill t${c.tier}">T${c.tier}</span></td>
+    <td>₹${c.min_psf.toLocaleString('en-IN')}</td>
+    <td style="color:var(--paper);font-weight:500">₹${c.avg_psf.toLocaleString('en-IN')}</td>
+    <td>₹${c.max_psf.toLocaleString('en-IN')}</td>
+    <td><span style="color:${c.growth_yoy>=12?'var(--green2)':c.growth_yoy>=9?'var(--gold2)':'var(--light)'};font-weight:500">${c.growth_yoy}%</span></td></tr>`).join('');
+}
+
+// PREDICT
+async function loadLocalities(){
+  const city=document.getElementById('p-city').value;
+  const r=await fetch('/api/localities/'+encodeURIComponent(city));
+  const d=await r.json();
+  document.getElementById('p-locality').innerHTML=d.localities.map(l=>`<option value="${l}">${l}</option>`).join('');
+}
+async function predictPrice(){
+  document.getElementById('predict-text').style.display='none';
+  document.getElementById('predict-spinner').style.display='block';
+  document.getElementById('result-box').style.display='none';
+  try{
+    const body={city:document.getElementById('p-city').value,locality:document.getElementById('p-locality').value,
+      property_type:document.getElementById('p-type').value,furnishing:document.getElementById('p-furnish').value,
+      floor:document.getElementById('p-floor').value,area_sqft:+document.getElementById('p-area').value,
+      bedrooms:+document.getElementById('p-beds').value,bathrooms:+document.getElementById('p-baths').value,
+      age_years:+document.getElementById('p-age').value,garage:+document.getElementById('p-garage').value,
+      amenities_count:document.querySelectorAll('.am-checkbox:checked').length};
+    const r=await fetch('/api/predict',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const d=await r.json(); if(d.error){alert(d.error);return;}
+    const cr=v=>v>=1e7?'₹'+(v/1e7).toFixed(2)+' Cr':'₹'+(v/1e5).toFixed(1)+' L';
+    document.getElementById('r-price').textContent=cr(d.predicted_price);
+    document.getElementById('r-range').textContent=`Range  ${cr(d.low_estimate)} — ${cr(d.high_estimate)}`;
+    document.getElementById('r-psf').textContent='₹'+d.price_per_sqft.toLocaleString('en-IN');
+    document.getElementById('r-growth').textContent=d.growth_yoy+'%';
+    document.getElementById('r-cityavg').textContent='₹'+d.city_avg_psf.toLocaleString('en-IN');
+    const sc=d.investment_score;
+    const ring=document.getElementById('inv-ring'); ring.textContent=sc;
+    ring.style.borderColor=sc>=70?'var(--green2)':sc>=50?'var(--gold)':'var(--red)';
+    ring.style.color=sc>=70?'var(--green2)':sc>=50?'var(--gold2)':'#e07070';
+    const sugg=[];
+    if(body.age_years>15) sugg.push('Property is '+body.age_years+' yrs old — factor in renovation costs of ₹500–1500/sqft.');
+    if(body.amenities_count<5) sugg.push('Low amenity count ('+body.amenities_count+'/15). Higher amenities correlate with 15–25% better resale.');
+    if(d.growth_yoy>=12) sugg.push(body.city+' leads with '+d.growth_yoy+'% YoY growth — top performing market recently.');
+    if(d.price_per_sqft>d.city_avg_psf*1.35) sugg.push('Price is 35%+ above city average — verify the locality premium is sustainable.');
+    if(body.furnishing==='Unfurnished') sugg.push('Semi-furnishing costs ₹3–6L but adds 12% to market value — strong ROI on upgrade.');
+    if(body.floor==='Ground') sugg.push('Ground floor units trade at ~8% discount. Upper floors hold value better for resale.');
+    if(!sugg.length) sugg.push('Property appears fairly priced relative to '+body.city+' market benchmarks for this locality.');
+    document.getElementById('suggest-list').innerHTML=sugg.map(s=>`<div class="suggest-item">${s}</div>`).join('');
+    document.getElementById('result-box').style.display='block';
+  }finally{
+    document.getElementById('predict-text').style.display='inline';
+    document.getElementById('predict-spinner').style.display='none';
+  }
+}
+
+// COMPARE — partition search system
+let cmpAllCities = [];
+let cmpSelected = {}; // {1: 'Mumbai', 2: 'Delhi', ...}
+let partitionCount = 2;
+
+function loadChips() {
+  if (cmpAllCities.length) return;
+  cmpAllCities = JSON.parse(document.getElementById('cities-data').textContent);
+}
+
+function cmpFilter(idx) {
+  const q = document.getElementById('cmp-search-' + idx).value.toLowerCase();
+  const dd = document.getElementById('cmp-dropdown-' + idx);
+  if (!q) { dd.classList.remove('open'); return; }
+  const alreadySelected = Object.values(cmpSelected);
+  const matches = cmpAllCities.filter(c => c.toLowerCase().includes(q));
+  if (!matches.length) {
+    dd.innerHTML = '<div class="cmp-dropdown-item disabled">No cities found</div>';
+  } else {
+    dd.innerHTML = matches.map(c => {
+      const used = alreadySelected.includes(c);
+      return `<div class="cmp-dropdown-item${used ? ' disabled' : ''}" onclick="${used ? '' : 'cmpSelect(' + idx + ',\'' + c + '\')'}">${c}${used ? ' <span style="color:var(--muted);font-size:.6rem">(already selected)</span>' : ''}</div>`;
+    }).join('');
+  }
+  dd.classList.add('open');
+}
+
+function cmpSelect(idx, city) {
+  cmpSelected[idx] = city;
+  document.getElementById('cmp-search-' + idx).value = '';
+  document.getElementById('cmp-dropdown-' + idx).classList.remove('open');
+  document.getElementById('cmp-empty-' + idx).style.display = 'none';
+  // fetch city info from cityData (already loaded by dashboard)
+  const info = cityData ? cityData.find(c => c.city === city) : null;
+  const card = document.getElementById('cmp-card-' + idx);
+  card.className = 'cmp-selected-card active';
+  card.innerHTML = `
+    <button class="cmp-remove-btn" onclick="cmpRemove(${idx})">&times;</button>
+    <div class="city-name">${city}</div>
+    <div class="city-meta">
+      ${info ? `
+        <span>State: <strong>${info.state||'—'}</strong></span>
+        <span>Tier: <strong>T${info.tier||'—'}</strong></span>
+        <span>Avg ₹/sqft: <strong>₹${(info.avg_psf||0).toLocaleString('en-IN')}</strong></span>
+        <span>Growth: <strong style="color:${(info.growth_yoy||0)>=12?'var(--green2)':'var(--gold2)'}">${info.growth_yoy||0}%</strong></span>
+      ` : '<span>City data will appear after comparison</span>'}
+    </div>`;
+}
+
+function cmpRemove(idx) {
+  delete cmpSelected[idx];
+  const card = document.getElementById('cmp-card-' + idx);
+  card.className = 'cmp-selected-card';
+  card.innerHTML = '';
+  document.getElementById('cmp-empty-' + idx).style.display = 'block';
+  document.getElementById('cmp-search-' + idx).value = '';
+}
+
+function addPartition() {
+  if (partitionCount >= 5) return;
+  partitionCount++;
+  const wrap = document.getElementById('cmp-partitions');
+  const div = document.createElement('div');
+  div.className = 'card gap';
+  div.id = 'cmp-part-' + partitionCount;
+  div.innerHTML = `
+    <div class="card-title" style="display:flex;align-items:center;gap:8px">
+      <span style="background:var(--gold);color:var(--ink);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:600">${partitionCount}</span>
+      City ${['One','Two','Three','Four','Five'][partitionCount-1]}
+    </div>
+    <div class="cmp-search-wrap">
+      <input type="text" id="cmp-search-${partitionCount}" placeholder="Type to search city..." oninput="cmpFilter(${partitionCount})" onfocus="cmpFilter(${partitionCount})">
+      <div class="cmp-dropdown" id="cmp-dropdown-${partitionCount}"></div>
+    </div>
+    <div class="cmp-selected-card" id="cmp-card-${partitionCount}"></div>
+    <div class="cmp-empty-msg" id="cmp-empty-${partitionCount}">Search and select a city above</div>`;
+  wrap.appendChild(div);
+  if (partitionCount >= 5) document.getElementById('add-partition-btn').style.display = 'none';
+}
+
+// Close dropdowns on outside click
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.cmp-search-wrap')) {
+    document.querySelectorAll('.cmp-dropdown').forEach(d => d.classList.remove('open'));
+  }
+});
+
+async function runCompare(){
+  const cities = Object.values(cmpSelected).filter(Boolean);
+  if(cities.length<2){alert('Please select at least 2 cities');return;}
+  const r=await fetch('/api/compare',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({cities})});
+  const data=await r.json();
+  document.getElementById('compare-results').style.display='block';
+  if(cmpPsf) cmpPsf.destroy();
+  cmpPsf=new Chart(document.getElementById('cmpPsfChart').getContext('2d'),{type:'bar',
+    data:{labels:data.map(c=>c.city),datasets:[
+      {label:'Min',data:data.map(c=>c.min_psf),backgroundColor:'rgba(184,150,90,.3)',borderRadius:2},
+      {label:'Avg',data:data.map(c=>c.avg_psf),backgroundColor:'rgba(184,150,90,.8)',borderRadius:2},
+      {label:'Max',data:data.map(c=>c.max_psf),backgroundColor:'rgba(212,168,83,.5)',borderRadius:2}]},
+    options:{...CHART_OPT,scales:{...CHART_OPT.scales,y:{...CHART_OPT.scales.y,ticks:{...CHART_OPT.scales.y.ticks,callback:v=>'₹'+v.toLocaleString('en-IN')}}}}
+  });
+  if(cmpG) cmpG.destroy();
+  cmpG=new Chart(document.getElementById('cmpGrowthChart').getContext('2d'),{type:'bar',
+    data:{labels:data.map(c=>c.city),datasets:[{label:'YoY%',data:data.map(c=>c.growth_yoy),
+      backgroundColor:data.map(c=>c.growth_yoy>=12?'rgba(45,106,79,.85)':'rgba(184,150,90,.75)'),borderRadius:2}]},
+    options:{...CHART_OPT,plugins:{...CHART_OPT.plugins,legend:{display:false}},
+      scales:{...CHART_OPT.scales,y:{...CHART_OPT.scales.y,ticks:{...CHART_OPT.scales.y.ticks,callback:v=>v+'%'}}}}
+  });
+  const mxG=Math.max(...data.map(c=>c.growth_yoy)),mnP=Math.min(...data.map(c=>c.avg_psf));
+  document.getElementById('cmpTableBody').innerHTML=data.map(c=>`
+    <tr><td class="city-name-cell">${c.city}</td><td>${c.state}</td>
+    <td><span class="tier-pill t${c.tier}">T${c.tier}</span></td>
+    <td>₹${c.min_psf.toLocaleString('en-IN')}</td>
+    <td style="color:var(--paper);font-weight:500">₹${c.avg_psf.toLocaleString('en-IN')}</td>
+    <td>₹${c.max_psf.toLocaleString('en-IN')}</td>
+    <td style="color:${c.growth_yoy>=12?'var(--green2)':'var(--gold2)'};font-weight:500">${c.growth_yoy}%</td>
+    <td style="font-size:.65rem;color:var(--muted)">${c.growth_yoy===mxG?'★ Best Growth':c.avg_psf===mnP?'◎ Most Affordable':'—'}</td></tr>`).join('');
+}
+
+// HEATMAP
+async function loadHeatmap(){
+  if(hmData.length){renderHM(hmData);return;}
+  const r=await fetch('/api/city-stats'); hmData=await r.json(); renderHM(hmData);
+}
+function sortHM(by){renderHM([...hmData].sort((a,b)=>b[by]-a[by]));}
+function filterHM(t){renderHM(t===0?hmData:hmData.filter(c=>c.tier===t));}
+function renderHM(data){
+  const mx=Math.max(...data.map(c=>c.avg_psf)),mn=Math.min(...data.map(c=>c.avg_psf));
+  document.getElementById('heatmapGrid').innerHTML=data.map(c=>{
+    const t=(c.avg_psf-mn)/(mx-mn);
+    const h=Math.round(20+t*15),s=Math.round(40+t*30),l=Math.round(18+t*22);
+    return `<div class="hm-cell" style="background:hsl(${h},${s}%,${l}%)" onclick="jumpPredict('${c.city}')">
+      <div class="hm-city">${c.city}</div>
+      <div class="hm-psf">₹${c.avg_psf.toLocaleString('en-IN')}/sqft</div>
+      <div class="hm-gr">↑${c.growth_yoy}%</div></div>`;
+  }).join('');
+}
+function jumpPredict(city){
+  document.getElementById('p-city').value=city;
+  showTab('predict',document.querySelectorAll('.nav-item')[1]);
+  loadLocalities();
+}
+
+// TRENDS
+async function loadTrends(){
+  if(trendC) return;
+  const r=await fetch('/api/trends'); const d=await r.json();
+  const COLS=['#b8965a','#c9a46a','#80a090','#7ea8c4','#a08080','#90a060'];
+  trendC=new Chart(document.getElementById('trendChart').getContext('2d'),{type:'line',
+    data:{labels:d.quarters,datasets:Object.entries(d.cities).map(([city,vals],i)=>({
+      label:city,data:vals,borderColor:COLS[i%6],backgroundColor:'transparent',
+      borderWidth:1.5,pointRadius:1,tension:0.35}))},
+    options:{...CHART_OPT,scales:{...CHART_OPT.scales,y:{...CHART_OPT.scales.y,ticks:{...CHART_OPT.scales.y.ticks,callback:v=>'₹'+v.toLocaleString('en-IN')}}}}
+  });
+  const events=[
+    {tag:'Q2 2020',cls:'t-red',text:'COVID lockdown — prices dipped 5–8% across metros'},
+    {tag:'Q4 2021',cls:'t-amber',text:'RBI rate cuts drove recovery; demand surged in suburbs'},
+    {tag:'2022–23',cls:'t-green',text:'Post-COVID boom — 22–30% cumulative appreciation'},
+    {tag:'2024',cls:'t-blue',text:'₹3.47 lakh crore in top-7 city sales — all-time record (Anarock)'},
+    {tag:'Q1',cls:'t-green',text:'₹6.65L Cr FY value; premium segment up 67% YoY (JLL)'},
+  ];
+  document.getElementById('trend-events').innerHTML=events.map(e=>`
+    <div class="trend-event">
+      <span class="trend-tag ${e.cls}">${e.tag}</span>
+      <span style="font-size:var(--fs-xs);color:var(--muted);line-height:1.5">${e.text}</span>
+    </div>`).join('');
+  const r2=await fetch('/api/city-stats'); const stats=await r2.json();
+  const top=[...stats].sort((a,b)=>b.growth_yoy-a.growth_yoy).slice(0,8);
+  document.getElementById('growthLeaders').innerHTML=top.map(c=>`
+    <div class="g-bar-wrap">
+      <div style="min-width:100px;font-size:var(--fs-xs);color:var(--light)">${c.city}</div>
+      <div class="g-bar"><div class="g-bar-fill" style="width:${(c.growth_yoy/18)*100}%;background:${c.growth_yoy>=12?'var(--green2)':'var(--gold)'}"></div></div>
+      <div style="min-width:36px;text-align:right;font-size:var(--fs-xs);color:${c.growth_yoy>=12?'var(--green2)':'var(--gold2)'};font-weight:500">${c.growth_yoy}%</div>
+    </div>`).join('');
+}
+
+// ROI
+async function calcROI(){
+  const body={city:document.getElementById('roi-city').value,purchase_price:+document.getElementById('roi-price').value,
+    monthly_rent:+document.getElementById('roi-rent').value,hold_years:+document.getElementById('roi-years').value,
+    loan_percent:+document.getElementById('roi-loan').value,interest_rate:+document.getElementById('roi-rate').value};
+  const r=await fetch('/api/roi',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const d=await r.json();
+  const cr=v=>v>=1e7?'₹'+(v/1e7).toFixed(2)+' Cr':'₹'+(v/1e5).toFixed(1)+' L';
+  document.getElementById('roi-result').innerHTML=`
+    <div class="roi-hero">
+      <div style="font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Future Value after ${body.hold_years} years</div>
+      <div class="roi-val">${cr(d.future_value)}</div>
+      <div style="font-size:var(--fs-xs);color:var(--muted);margin-top:4px">at ${d.growth_rate.toFixed(1)}% annual growth · ${body.city}</div>
+    </div>
+    <div class="roi-grid">
+      <div class="roi-m"><div class="v g">${cr(d.capital_gain)}</div><div class="l">Capital Gain</div></div>
+      <div class="roi-m"><div class="v">${cr(d.rental_income)}</div><div class="l">Rental Income</div></div>
+      <div class="roi-m"><div class="v r">${cr(d.total_interest)}</div><div class="l">Interest Paid</div></div>
+      <div class="roi-m"><div class="v g">${cr(d.net_return)}</div><div class="l">Net Return</div></div>
+      <div class="roi-m"><div class="v">${d.roi_percent}%</div><div class="l">Total ROI</div></div>
+      <div class="roi-m"><div class="v">${d.annual_roi}%</div><div class="l">Annual ROI</div></div>
+    </div>
+    <div style="margin-top:12px;font-size:var(--fs-xs);color:var(--muted);letter-spacing:.5px">Monthly EMI — <strong style="color:var(--light)">${cr(d.monthly_emi)}</strong></div>`;
+  document.getElementById('roi-chart-card').style.display='block';
+  if(roiC) roiC.destroy();
+  roiC=new Chart(document.getElementById('roiChart').getContext('2d'),{type:'line',
+    data:{labels:d.yearly.map(y=>'Year '+y.year),datasets:[
+      {label:'Property Value',data:d.yearly.map(y=>y.property_value),borderColor:'#40916c',backgroundColor:'rgba(64,145,108,0.15)',fill:true,tension:0.35,borderWidth:2,pointRadius:3,pointBackgroundColor:'#40916c'},
+      {label:'Cumulative Rent',data:d.yearly.map(y=>y.cumulative_rent),borderColor:'#b8965a',backgroundColor:'transparent',tension:0.35,borderWidth:2,pointRadius:3,pointBackgroundColor:'#b8965a',borderDash:[5,5]}]},
+    options:{...CHART_OPT,scales:{...CHART_OPT.scales,y:{...CHART_OPT.scales.y,ticks:{...CHART_OPT.scales.y.ticks,callback:v=>'₹'+(v/1e5).toFixed(0)+'L'}}}}
+  });
+}
+
+// NEWS
+async function loadNews(){
+  if(document.querySelectorAll('.news-card').length) return;
+  const r=await fetch('/api/news'); const articles=await r.json();
+  document.getElementById('newsFeed').innerHTML=articles.map(a=>`
+    <a href="${a.url}" target="_blank" style="text-decoration:none">
+    <div class="news-card">
+      <div class="news-tag">${a.tag} · ${a.published}</div>
+      <div class="news-headline">${a.title}</div>
+      <div class="news-desc">${a.desc}</div>
+      <div class="news-meta"><span>${a.source}</span></div>
+    </div></a>`).join('');
+}
+
+// PLOT TABS
+function showPlot(t,el){
+  document.querySelectorAll('.plot-img').forEach(i=>i.classList.remove('active'));
+  document.querySelectorAll('.plot-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('plot-'+t).classList.add('active');
+  el.classList.add('active');
+}
+
+// INIT
+loadDashboard(); loadLocalities();
+</script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>PropWise India — Real Estate Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --ink:#0a0a0a; --paper:#f5f2ee; --cream:#ede8e0; --warm:#d4c4a8;
+  --gold:#b8965a; --gold2:#d4a853; --charcoal:#1a1a1a; --mid:#2d2d2d;
+  --muted:#6b6b6b; --light:#9a9a9a; --border:#e0d8cc; --border2:#2a2a2a;
+  --green:#2d6a4f; --green2:#40916c; --red:#c1121f; --blue:#1d3557;
+  --card:#ffffff; --card-dark:#111111;
+  --fs-xs:.72rem; --fs-sm:.82rem; --fs-base:.92rem; --fs-lg:1.05rem; --fs-xl:1.3rem; --fs-2xl:1.7rem; --fs-3xl:2.4rem;
+  --fs-4xl:3.8rem;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--ink);color:var(--paper);font-family:'Inter',sans-serif;font-weight:300;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden;}
+::selection{background:var(--gold);color:var(--ink);}
+a{color:inherit;text-decoration:none;}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(10,10,10,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border2);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:70px;}
+.logo{display:flex;align-items:center;gap:12px;cursor:pointer;}
+.logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--ink);font-weight:bold;}
+.logo-text{font-family:'Playfair Display',serif;font-size:1.2rem;letter-spacing:.5px;color:var(--paper);}
+.logo-sub{font-size:.65rem;color:var(--light);letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
+
+.btn-primary{padding:14px 32px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--ink);border:none;border-radius:6px;font-size:var(--fs-sm);font-weight:700;cursor:pointer;letter-spacing:2px;text-transform:uppercase;transition:all .3s ease;font-family:'Inter',sans-serif;box-shadow:0 6px 16px rgba(184,150,90,.25);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(184,150,90,.4);filter:brightness(1.1);}
+.btn-outline{padding:12px 28px;background:transparent;border:1px solid var(--gold);color:var(--gold);border-radius:6px;font-size:var(--fs-sm);letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .3s ease;font-family:'Inter',sans-serif;}
+.btn-outline:hover{background:var(--gold);color:var(--ink);box-shadow:0 4px 12px rgba(184,150,90,.3);transform:translateY(-1px);}
+
+/* ── HERO ── */
+.hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 24px 60px;position:relative;}
+.hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:80%;height:100%;background:radial-gradient(ellipse at top, rgba(184,150,90,.08), transparent 70%);pointer-events:none;z-index:0;}
+.hero-content{position:relative;z-index:1;max-width:800px;}
+.hero-tag{font-size:.7rem;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:24px;display:inline-flex;align-items:center;gap:12px;}
+.hero h1{font-family:'Playfair Display',serif;font-size:var(--fs-4xl);font-weight:400;line-height:1.1;color:var(--paper);margin-bottom:24px;}
+.hero h1 em{font-style:italic;color:var(--gold2);}
+.hero p{font-size:var(--fs-lg);color:var(--light);line-height:1.6;margin-bottom:48px;max-width:600px;margin-left:auto;margin-right:auto;}
+.hero-actions{display:flex;gap:20px;justify-content:center;}
+@media(max-width:768px){
+  .hero h1{font-size:var(--fs-3xl);}
+  .hero-actions{flex-direction:column;align-items:center;}
+}
+
+/* ── FEATURES ── */
+.features{padding:80px 48px;background:linear-gradient(180deg,var(--charcoal),var(--ink));border-top:1px solid rgba(255,255,255,.05);display:grid;grid-template-columns:repeat(3,1fr);gap:40px;}
+@media(max-width:900px){.features{grid-template-columns:1fr;text-align:center;}}
+.feature{position:relative;background:linear-gradient(145deg,rgba(255,255,255,.03),rgba(0,0,0,.2));padding:40px 32px;border:1px solid rgba(255,255,255,.05);border-radius:12px;transition:all 0.4s ease;box-shadow:0 4px 16px rgba(0,0,0,.2);}
+.feature::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold2),transparent);opacity:0;transition:opacity 0.4s;border-radius:12px 12px 0 0;}
+.feature:hover{transform:translateY(-5px);box-shadow:0 20px 48px rgba(0,0,0,.5);border-color:rgba(184,150,90,.3);background:linear-gradient(145deg,rgba(255,255,255,.05),rgba(0,0,0,.1));}
+.feature:hover::after{opacity:1;}
+.feature-icon{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,rgba(184,150,90,.15),rgba(212,168,83,.05));border:1px solid rgba(184,150,90,.4);display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--gold2);margin-bottom:24px;box-shadow:0 4px 12px rgba(184,150,90,.2);}
+@media(max-width:900px){.feature-icon{margin:0 auto 24px;}}
+.feature h3{font-family:'Playfair Display',serif;font-size:var(--fs-xl);color:var(--paper);margin-bottom:12px;font-weight:400;text-shadow:0 2px 10px rgba(255,255,255,0.1);}
+.feature p{font-size:var(--fs-sm);color:var(--muted);line-height:1.7;}
+
+/* ── FOOTER ── */
+footer{padding:40px;text-align:center;font-size:var(--fs-xs);color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo" style="text-decoration:none;color:inherit;">
+    <div class="logo-icon">⬡</div>
+    <div>
+      <div class="logo-text">PropWise</div>
+      <div class="logo-sub">India</div>
+    </div>
+  </a>
+  <div>
+    <a href="/dashboard"><button class="btn-primary">Launch App</button></a>
+  </div>
+</nav>
+
+<div class="hero">
+<div class="hero-content">
+    <div class="hero-tag">Real Estate Intelligence</div>
+    <h1>Master the Indian Property Market with <em>Data-Driven Precision</em></h1>
+    <p>Empower your investment decisions with hyper-local pricing models, predictive ROI analysis, and live market intelligence across 65 Indian cities.</p>
+    <div class="hero-actions">
+      <a href="/dashboard"><button class="btn-primary" style="padding:16px 36px; font-size:var(--fs-base);">Enter Dashboard</button></a>
+    </div>
+  </div>
+</div>
+
+<div class="features">
+  <div class="feature">
+    <div class="feature-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12"/><path d="M6 8h12"/><path d="M6 13h8.5l-8.5 8"/><path d="M11 13c4.5 0 6-3 6-5"/></svg>
+    </div>
+    <h3>Advanced Valuation Engine</h3>
+    <p>Instantly estimate the true market value of properties down to the locality level, powered by Gradient Boosting ML achieving 90% R² accuracy on Q1 data.</p>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+    </div>
+    <h3>Market Heatmaps & ROI</h3>
+    <p>Visualize price intensity across tier 1, 2, and 3 cities. Calculate precise capital gains, rental yields, and net returns with our integrated investment calculator.</p>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+    </div>
+    <h3>Live News & Trends</h3>
+    <p>Stay ahead of the curve with real-time headlines and macro policy updates. Track historical price movements from 2020 through the current cycle.</p>
+  </div>
+</div>
+
+<footer>
+  &copy; PropWise India. Advanced Real Estate ML Platform.
+</footer>
+
+</body>
+</html>
