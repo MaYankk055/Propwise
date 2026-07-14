@@ -7,3 +7,5 @@ backend/data/*.csv
 backend/data/*.json
 backend/data/news_cache.json
 .env
+
+.early.coverage
