@@ -19,46 +19,119 @@ python backend/app.py
 ```
 
 ## Tech Stack
-Python · Pandas · Scikit-learn · Flask · Chart.js · HTML/CSS/JS
 
-🚀 The Elevator Pitch (What is it?)
-Propwise is a comprehensive Machine Learning based platform designed for Indian real estate market analytics and price prediction. It provides users with AI-driven property valuations, comparative market dashboards, ROI calculators, and live industry news.
+1. **Core Technologies**
+   - Python
+   - Pandas
+   - Scikit-learn
+   - Flask
+   - Chart.js
+   - HTML/CSS/JavaScript
 
-🛠️ Tech Stack & Frameworks
-Programming Languages: Python, JavaScript, HTML5, CSS3
-Web Framework: Flask (Python) with Waitress as a production-grade WSGI server
-Frontend Libraries: Chart.js (for dynamic, interactive data visualization), Jinja2 (Flask Templating)
-Deployment & DevOps: Docker, Render Platform (PaaS)
-External Integrations: RESTful News APIs for live market updates (with intelligent JSON-based caching to reduce API calls)
+---
 
-🧠 Machine Learning & Data Science
-Libraries Used: Scikit-learn, Pandas, NumPy, Matplotlib, Seaborn, Joblib
+## 🚀 Elevator Pitch (What is it?)
 
-Algorithms Evaluated:
-Linear Regression: Baseline model for linear relationships.
-Random Forest Regressor: Ensemble learning method using 300 decision trees to capture non-linear patterns and interactions.
-Gradient Boosting Regressor: Sequential ensemble method using 500 estimators with depth 5, optimized via learning rate tuning.
-Model Selection: The pipeline automatically trains, evaluates, and dynamically selects the best performing model based on the highest R² (R-squared) score.
+1. **About Propwise**
+   - Propwise is a comprehensive Machine Learning platform for Indian real estate market analytics and price prediction.
+   - It offers AI-driven property valuations, comparative market dashboards, ROI calculators, and live industry news.
 
-Evaluation Metrics:
-R² (R-Squared): Measures the proportion of variance in the dependent variable explained by the model.
-MAE (Mean Absolute Error): Measures the average magnitude of the errors in predictions.
-RMSE (Root Mean Squared Error): Penalizes larger errors more heavily.
-MAPE (Mean Absolute Percentage Error): Presents the error as a percentage for easier business interpretation.
+---
 
-📊 Data Engineering & Feature Engineering
-Categorical Encoding: Applied Label Encoding to transform textual categorical variables (City, Locality, State, Property Type, Furnishing, Floor) into machine-readable numeric formats.
-Derived Features (Feature Engineering): Created custom features to boost model performance:
-price_per_sqft: Baseline price metric.
-room_ratio: Bathrooms divided by bedrooms to assess layout practicality.
-is_new: Binary flag for properties ≤ 3 years old.
-is_luxury: Binary flag triggered if the amenities count is ≥ 10.
-bhk_area: Interaction feature (bedrooms × area).
+## 🛠️ Tech Stack & Frameworks
 
+1. **Programming Languages**
+   - Python
+   - JavaScript
+   - HTML5
+   - CSS3
 
-💡 Key Features
-AI Price Prediction Engine: Predicts property prices with confidence intervals (low/high estimates) based on the model's MAPE, plus computes an "Investment Score".
-Interactive Market Dashboard: Real-time visual comparison of top cities, price trends across tiers, and property types using Chart.js.
-Advanced ROI Calculator: Calculates future property value, capital gains, rental income, and monthly EMI incorporating interest rates and historic city-specific YoY growth rates.
-Live News & Caching: Built a robust data pipeline that fetches live real estate news from external APIs, normalizes the data, categorizes it (e.g., Policy, Market Data, Investment), and caches it locally (TTL system) to optimize performance and rate limits.
-Production Ready: Fully containerized with a Dockerfile and render.yaml for scalable cloud deployment.
+2. **Web Framework**
+   - Flask (Python)
+   - Waitress as a production-grade WSGI server
+
+3. **Frontend Libraries**
+   - Chart.js for dynamic, interactive visualizations
+   - Jinja2 for Flask templating
+
+4. **Deployment & DevOps**
+   - Docker
+   - Render Platform (PaaS)
+
+5. **External Integrations**
+   - RESTful News APIs for live market updates
+   - Intelligent JSON-based caching to reduce API calls
+
+---
+
+## 🧠 Machine Learning & Data Science
+
+1. **Libraries Used**
+   - Scikit-learn
+   - Pandas
+   - NumPy
+   - Matplotlib
+   - Seaborn
+   - Joblib
+
+2. **Algorithms Evaluated**
+   - **Linear Regression**
+     - Baseline model for linear relationships.
+   - **Random Forest Regressor**
+     - Ensemble method using 300 decision trees to capture non-linear patterns and interactions.
+   - **Gradient Boosting Regressor**
+     - Sequential ensemble method using 500 estimators with depth 5, tuned with learning rate optimization.
+
+3. **Model Selection Strategy**
+   - Automatically trains and evaluates multiple models.
+   - Dynamically selects the best-performing model based on highest **R² (R-squared)** score.
+
+4. **Evaluation Metrics**
+   - **R² (R-Squared):** Proportion of variance explained by the model.
+   - **MAE (Mean Absolute Error):** Average absolute prediction error.
+   - **RMSE (Root Mean Squared Error):** Penalizes larger prediction errors more strongly.
+   - **MAPE (Mean Absolute Percentage Error):** Error represented in percentage form for business interpretability.
+
+---
+
+## 📊 Data Engineering & Feature Engineering
+
+1. **Categorical Encoding**
+   - Applied Label Encoding for:
+     - City
+     - Locality
+     - State
+     - Property Type
+     - Furnishing
+     - Floor
+
+2. **Derived Features**
+   - **price_per_sqft:** Baseline price efficiency metric.
+   - **room_ratio:** Bathrooms ÷ bedrooms to evaluate layout practicality.
+   - **is_new:** Binary flag for properties ≤ 3 years old.
+   - **is_luxury:** Binary flag when amenities count ≥ 10.
+   - **bhk_area:** Interaction feature (bedrooms × area).
+
+---
+
+## 💡 Key Features
+
+1. **AI Price Prediction Engine**
+   - Predicts property prices with confidence intervals (low/high estimates) using model MAPE.
+   - Generates an additional **Investment Score**.
+
+2. **Interactive Market Dashboard**
+   - Real-time visual analysis of top cities, price trends across tiers, and property type insights using Chart.js.
+
+3. **Advanced ROI Calculator**
+   - Estimates future value, capital gains, rental income, and monthly EMI.
+   - Incorporates interest rates and historical city-specific YoY growth.
+
+4. **Live News & Caching Pipeline**
+   - Fetches live real estate news from external APIs.
+   - Normalizes and categorizes news (Policy, Market Data, Investment, etc.).
+   - Uses local TTL-based caching for performance and API rate-limit optimization.
+
+5. **Production Readiness**
+   - Fully containerized with `Dockerfile` and `render.yaml`.
+   - Built for scalable cloud deployment.
